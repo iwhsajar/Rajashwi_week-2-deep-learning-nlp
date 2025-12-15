@@ -1,0 +1,7 @@
+# Friday Exercises Requirements
+# Model Persistence, Checkpoints, Regularization, Production Pipeline
+
+tensorflow>=2.10.0
+numpy>=1.21.0
+matplotlib>=3.4.0
+

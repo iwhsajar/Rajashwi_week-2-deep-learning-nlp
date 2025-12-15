@@ -1,0 +1,7 @@
+# Tuesday Exercises Requirements
+# Backpropagation, Optimizers, Batch Normalization, Custom Callbacks
+
+tensorflow>=2.10.0
+numpy>=1.21.0
+matplotlib>=3.4.0
+

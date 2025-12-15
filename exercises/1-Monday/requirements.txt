@@ -1,0 +1,7 @@
+# Monday Exercises Requirements
+# TensorBoard, Autoencoders, MLP Tuning
+
+tensorflow>=2.10.0
+numpy>=1.21.0
+matplotlib>=3.4.0
+

@@ -1,0 +1,7 @@
+# Thursday Exercises Requirements
+# RNN Text Generation, LSTM Sentiment Analysis
+
+tensorflow>=2.10.0
+numpy>=1.21.0
+matplotlib>=3.4.0
+
