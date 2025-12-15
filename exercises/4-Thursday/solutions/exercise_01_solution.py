@@ -9,6 +9,10 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 import matplotlib.pyplot as plt
+import datetime
+import os
+
+os.makedirs('logs/exercise_rnn', exist_ok=True)
 
 # =============================================================================
 # PART 1: Data Preparation
@@ -225,6 +229,10 @@ def train_and_generate():
     print("Training")
     print("=" * 50)
     
+    # TensorBoard callback
+    log_dir = "logs/exercise_rnn/lstm_" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    tb_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    
     history = model.fit(
         X, y,
         batch_size=128,
@@ -232,7 +240,8 @@ def train_and_generate():
         validation_split=0.1,
         callbacks=[
             keras.callbacks.EarlyStopping(patience=3, restore_best_weights=True),
-            keras.callbacks.ReduceLROnPlateau(factor=0.5, patience=2)
+            keras.callbacks.ReduceLROnPlateau(factor=0.5, patience=2),
+            tb_callback
         ]
     )
     
@@ -309,30 +318,12 @@ if __name__ == "__main__":
     
     model, history = train_and_generate()
     
-    # Plot training
-    plt.figure(figsize=(12, 4))
-    
-    plt.subplot(1, 2, 1)
-    plt.plot(history.history['loss'], label='Train')
-    plt.plot(history.history['val_loss'], label='Validation')
-    plt.xlabel('Epoch')
-    plt.ylabel('Loss')
-    plt.title('Training Loss')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    
-    plt.subplot(1, 2, 2)
-    plt.plot(history.history['accuracy'], label='Train')
-    plt.plot(history.history['val_accuracy'], label='Validation')
-    plt.xlabel('Epoch')
-    plt.ylabel('Accuracy')
-    plt.title('Training Accuracy')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.savefig('text_generation_training.png', dpi=150)
-    plt.show()
+    # TensorBoard instructions
+    print("\n" + "=" * 50)
+    print("View Training in TensorBoard")
+    print("=" * 50)
+    print("Run: tensorboard --logdir=logs/exercise_rnn")
+    print("Navigate to http://localhost:6006")
     
     print("\n" + "=" * 60)
     print("Solution Complete!")

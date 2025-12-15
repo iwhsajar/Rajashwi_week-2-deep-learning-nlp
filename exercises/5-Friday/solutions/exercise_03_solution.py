@@ -6,8 +6,12 @@ Complete implementation of regularization techniques to combat overfitting.
 
 import numpy as np
 import matplotlib.pyplot as plt
+import datetime
+import os
 from tensorflow import keras
 from tensorflow.keras import layers, regularizers
+
+os.makedirs('logs/exercise_overfitting', exist_ok=True)
 
 # =============================================================================
 # PART 1: Create Overfitting Scenario
@@ -157,12 +161,15 @@ def train_model(model, train_data, test_data, epochs=100, name="Model"):
         verbose=0
     )
     
+    log_dir = f"logs/exercise_overfitting/{name.lower()}_" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    tb_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=0)
+    
     history = model.fit(
         train_data[0], train_data[1],
         epochs=epochs,
         batch_size=64,
         validation_data=test_data,
-        callbacks=[early_stop],
+        callbacks=[early_stop, tb_callback],
         verbose=0
     )
     

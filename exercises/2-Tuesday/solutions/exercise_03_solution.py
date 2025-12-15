@@ -8,6 +8,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tensorflow import keras
 from tensorflow.keras import layers
+import datetime
+import os
+
+os.makedirs('logs/exercise_batch_norm', exist_ok=True)
 
 # =============================================================================
 # PART 1: Model Definitions
@@ -65,11 +69,15 @@ def compare_convergence(x_train, y_train, x_test, y_test, epochs=30, lr=0.001):
     )
     
     print("Training WITHOUT batch normalization...")
+    log_dir_no_bn = "logs/exercise_batch_norm/no_bn_" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    tb_no_bn = keras.callbacks.TensorBoard(log_dir=log_dir_no_bn, histogram_freq=1)
+    
     history_no_bn = model_no_bn.fit(
         x_train, y_train,
         epochs=epochs,
         batch_size=128,
         validation_data=(x_test, y_test),
+        callbacks=[tb_no_bn],
         verbose=0
     )
     
@@ -82,11 +90,15 @@ def compare_convergence(x_train, y_train, x_test, y_test, epochs=30, lr=0.001):
     )
     
     print("Training WITH batch normalization...")
+    log_dir_bn = "logs/exercise_batch_norm/with_bn_" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    tb_bn = keras.callbacks.TensorBoard(log_dir=log_dir_bn, histogram_freq=1)
+    
     history_bn = model_bn.fit(
         x_train, y_train,
         epochs=epochs,
         batch_size=128,
         validation_data=(x_test, y_test),
+        callbacks=[tb_bn],
         verbose=0
     )
     

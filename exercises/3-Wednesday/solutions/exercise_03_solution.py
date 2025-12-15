@@ -11,6 +11,10 @@ from sklearn.decomposition import PCA
 from tensorflow import keras
 from tensorflow.keras import layers
 import tensorflow as tf
+import datetime
+import os
+
+os.makedirs('logs/exercise_embeddings', exist_ok=True)
 
 # =============================================================================
 # PART 1: Keras Embedding Layer Exploration
@@ -331,11 +335,15 @@ def train_embeddings_for_classification():
             metrics=['accuracy']
         )
         
+        log_dir = f"logs/exercise_embeddings/dim_{dim}_" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        tb_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=0)
+        
         history = model.fit(
             X_train, y_train,
             epochs=10,
             batch_size=32,
             validation_data=(X_test, y_test),
+            callbacks=[tb_callback],
             verbose=0
         )
         

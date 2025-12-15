@@ -11,6 +11,10 @@ from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+import datetime
+import os
+
+os.makedirs('logs/exercise_sentiment', exist_ok=True)
 
 # =============================================================================
 # PART 1: Data Preprocessing (Navigator Role)
@@ -192,13 +196,17 @@ def train_and_compare():
         
         model.summary()
         
+        log_dir = f"logs/exercise_sentiment/{name}_" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        tb_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+        
         history = model.fit(
             x_train_sub, y_train_sub,
             epochs=5,
             batch_size=128,
             validation_data=(x_val, y_val),
             callbacks=[
-                keras.callbacks.EarlyStopping(patience=2, restore_best_weights=True)
+                keras.callbacks.EarlyStopping(patience=2, restore_best_weights=True),
+                tb_callback
             ],
             verbose=1
         )

@@ -10,8 +10,10 @@ from tensorflow.keras import layers
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import datetime
 
 os.makedirs('reconstructions', exist_ok=True)
+os.makedirs('logs/exercise_autoencoders', exist_ok=True)
 
 # ============================================================================
 # DATA PREPARATION
@@ -84,11 +86,16 @@ def train_simple_autoencoder():
     print("\nModel Summary:")
     autoencoder.summary()
     
+    # TensorBoard callback
+    log_dir = "logs/exercise_autoencoders/simple_" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    tb_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    
     history = autoencoder.fit(
         x_train, x_train,
         epochs=20,
         batch_size=256,
         validation_data=(x_test, x_test),
+        callbacks=[tb_callback],
         verbose=1
     )
     
@@ -156,11 +163,16 @@ def train_deep_autoencoder():
     print("\nModel Summary:")
     autoencoder.summary()
     
+    # TensorBoard callback
+    log_dir = "logs/exercise_autoencoders/deep_" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    tb_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    
     history = autoencoder.fit(
         x_train, x_train,
         epochs=20,
         batch_size=256,
         validation_data=(x_test, x_test),
+        callbacks=[tb_callback],
         verbose=1
     )
     
@@ -196,11 +208,16 @@ def train_denoising_autoencoder():
     _, autoencoder = build_deep_autoencoder()
     autoencoder._name = 'denoising_autoencoder'
     
+    # TensorBoard callback
+    log_dir = "logs/exercise_autoencoders/denoising_" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    tb_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    
     history = autoencoder.fit(
         x_train_noisy, x_train,  # Input: noisy, Target: clean
         epochs=20,
         batch_size=256,
         validation_data=(x_test_noisy, x_test),
+        callbacks=[tb_callback],
         verbose=1
     )
     
@@ -249,33 +266,17 @@ def compare_autoencoders():
     history_deep = train_deep_autoencoder()
     history_denoising = train_denoising_autoencoder()
     
-    # Plot comparison
-    plt.figure(figsize=(12, 5))
-    
-    plt.subplot(1, 2, 1)
-    plt.plot(history_simple.history['loss'], label='Simple')
-    plt.plot(history_deep.history['loss'], label='Deep')
-    plt.plot(history_denoising.history['loss'], label='Denoising')
-    plt.xlabel('Epoch')
-    plt.ylabel('Training Loss')
-    plt.title('Training Loss')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    
-    plt.subplot(1, 2, 2)
-    plt.plot(history_simple.history['val_loss'], label='Simple')
-    plt.plot(history_deep.history['val_loss'], label='Deep')
-    plt.plot(history_denoising.history['val_loss'], label='Denoising')
-    plt.xlabel('Epoch')
-    plt.ylabel('Validation Loss')
-    plt.title('Validation Loss')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    
-    plt.suptitle('Autoencoder Comparison', fontsize=14)
-    plt.tight_layout()
-    plt.savefig('reconstructions/comparison.png', dpi=150)
-    plt.close()
+    # TensorBoard comparison
+    print("\n" + "=" * 50)
+    print("Training Complete - View in TensorBoard")
+    print("=" * 50)
+    print("\nTo compare all autoencoders, run:")
+    print("  tensorboard --logdir=logs/exercise_autoencoders")
+    print("  Navigate to http://localhost:6006")
+    print("\nUse the 'Runs' selector to toggle between:")
+    print("  - simple_* (Simple Autoencoder)")
+    print("  - deep_* (Deep Autoencoder)")
+    print("  - denoising_* (Denoising Autoencoder)")
     
     # Write analysis
     analysis = f"""Autoencoder Analysis

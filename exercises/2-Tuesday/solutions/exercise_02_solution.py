@@ -8,6 +8,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tensorflow import keras
 from tensorflow.keras import layers
+import datetime
+import os
+
+os.makedirs('logs/exercise_optimizer', exist_ok=True)
 
 # =============================================================================
 # PART 1: Data Preparation
@@ -60,11 +64,16 @@ def train_with_optimizer(optimizer_name, optimizer, x_train, y_train, x_test, y_
     
     print(f"\nTraining with {optimizer_name}...")
     
+    # TensorBoard callback
+    log_dir = f"logs/exercise_optimizer/{optimizer_name.replace(' ', '_').replace('+', 'plus')}_" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    tb_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    
     history = model.fit(
         x_train, y_train,
         epochs=epochs,
         batch_size=batch_size,
         validation_data=(x_test, y_test),
+        callbacks=[tb_callback],
         verbose=0
     )
     

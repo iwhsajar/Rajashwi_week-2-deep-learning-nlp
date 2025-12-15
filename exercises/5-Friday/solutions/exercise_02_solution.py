@@ -7,9 +7,12 @@ Complete implementation of optimal checkpoint strategies for training.
 import numpy as np
 import os
 import matplotlib.pyplot as plt
+import datetime
 from tensorflow import keras
 from tensorflow.keras import layers
-from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, TensorBoard
+
+os.makedirs('logs/exercise_checkpoint', exist_ok=True)
 
 # =============================================================================
 # PART 1: Create Model and Data
@@ -69,12 +72,14 @@ def strategy_save_best_only(model, train_data, val_data, checkpoint_dir):
         verbose=1
     )
     
+    tb = TensorBoard(log_dir="logs/exercise_checkpoint/strategy1_" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
+    
     history = model.fit(
         train_data[0], train_data[1],
         epochs=20,
         batch_size=128,
         validation_data=val_data,
-        callbacks=[checkpoint],
+        callbacks=[checkpoint, tb],
         verbose=0
     )
     

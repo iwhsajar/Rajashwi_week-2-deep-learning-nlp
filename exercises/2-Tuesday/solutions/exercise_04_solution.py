@@ -11,6 +11,9 @@ import numpy as np
 import json
 import datetime
 import matplotlib.pyplot as plt
+import os
+
+os.makedirs('logs/exercise_callbacks', exist_ok=True)
 
 # =============================================================================
 # TASK 1: Step Learning Rate Scheduler
@@ -159,13 +162,18 @@ def train_with_custom_callbacks():
         verbose=1
     )
     
+    # Add TensorBoard to show how to combine with custom callbacks
+    log_dir = "logs/exercise_callbacks/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    tb_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    print(f"TensorBoard logs: {log_dir}")
+    
     # Train
     history = model.fit(
         x_train[:10000], y_train[:10000],
         epochs=30,
         batch_size=128,
         validation_data=(x_test, y_test),
-        callbacks=[lr_scheduler, json_logger, early_stop],
+        callbacks=[lr_scheduler, json_logger, early_stop, tb_callback],
         verbose=1
     )
     

@@ -7,8 +7,11 @@ Complete implementation of saving and loading models in different formats.
 import numpy as np
 import os
 import tempfile
+import datetime
 from tensorflow import keras
 from tensorflow.keras import layers
+
+os.makedirs('logs/exercise_persistence', exist_ok=True)
 
 # =============================================================================
 # PART 1: Create Sample Model
@@ -43,11 +46,16 @@ def train_model(model, epochs=5):
     x_train = x_train[:5000]
     y_train = y_train[:5000]
     
+    # TensorBoard callback
+    log_dir = "logs/exercise_persistence/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    tb_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    
     history = model.fit(
         x_train, y_train,
         epochs=epochs,
         batch_size=128,
         validation_split=0.2,
+        callbacks=[tb_callback],
         verbose=1
     )
     
