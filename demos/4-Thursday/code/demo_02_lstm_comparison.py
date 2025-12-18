@@ -113,12 +113,6 @@ lstm_model = build_lstm()
 rnn_model.build(input_shape=(None, max_length))
 lstm_model.build(input_shape=(None, max_length))
 
-print("\nSimpleRNN Model:")
-print(f"  Parameters: {rnn_model.count_params():,}")
-
-print("\nLSTM Model:")
-print(f"  Parameters: {lstm_model.count_params():,}")
-print(f"  (LSTM has ~4x more parameters due to 4 gates)")
 
 # ============================================================================
 # PART 3: Training Comparison
@@ -182,6 +176,14 @@ lstm_time = time.time() - start_time
 lstm_test_loss, lstm_test_acc = lstm_model.evaluate(x_test_sub, y_test_sub, verbose=0)
 print(f"LSTM Test Accuracy: {lstm_test_acc:.4f} (Time: {lstm_time:.1f}s)")
 
+
+print("\nSimpleRNN Model:")
+print(f"  Parameters: {rnn_model.layers[1].count_params():,}")
+
+print("\nLSTM Model:")
+print(f"  Parameters: {lstm_model.layers[1].count_params():,}")
+print(f"  (LSTM has ~4x more parameters in recurrent due to 4 gates)")
+
 # ============================================================================
 # PART 4: View Training Comparison (TensorBoard)
 # ============================================================================
@@ -225,7 +227,7 @@ stacked_lstm = keras.Sequential([
 
 stacked_lstm.build(input_shape=(None, max_length))
 print("\nStacked LSTM:")
-print(f"  Parameters: {stacked_lstm.count_params():,}")
+print(f"  Parameters: {stacked_lstm.layers[1].count_params():,}")
 
 # Bidirectional LSTM
 bidirectional_lstm = keras.Sequential([
@@ -236,7 +238,7 @@ bidirectional_lstm = keras.Sequential([
 
 bidirectional_lstm.build(input_shape=(None, max_length))
 print("\nBidirectional LSTM:")
-print(f"  Parameters: {bidirectional_lstm.count_params():,}")
+print(f"  Parameters: {bidirectional_lstm.layers[1].count_params():,}")
 print("  (2x parameters: forward + backward)")
 
 # LSTM with dropout
@@ -275,8 +277,8 @@ gru_model = keras.Sequential([
 ], name='GRU')
 
 gru_model.build(input_shape=(None, max_length))
-print(f"GRU Parameters: {gru_model.count_params():,}")
-print(f"LSTM Parameters: {lstm_model.count_params():,}")
+print(f"GRU Parameters: {gru_model.layers[1].count_params():,}")
+print(f"LSTM Parameters: {lstm_model.layers[1].count_params():,}")
 print(f"\nGRU has ~75% of LSTM parameters (3 gates vs 4)")
 
 # Train GRU for comparison
